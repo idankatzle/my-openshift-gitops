@@ -1,0 +1,10 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: my-test-app
+spec:
+  to:
+    kind: Service
+    name: my-test-app
+  port:
+    targetPort: 8080

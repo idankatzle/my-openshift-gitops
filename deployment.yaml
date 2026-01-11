@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-test-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-test-app
+  template:
+    metadata:
+      labels:
+        app: my-test-app
+    spec:
+      containers:
+      - name: my-test-app
+        image: quay.io/rhosdt/nodejs-rest-http-crud:latest # הגרסה שלך
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: "postgresql"
+        - name: DB_DATABASE
+          value: "sampledb"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
